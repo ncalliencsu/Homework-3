@@ -1,0 +1,91 @@
+---
+title: "Control Flow and Function Writing"
+format: html
+editor: visual
+---
+
+```{r}
+
+load("hw2_list.rda")
+
+
+```
+
+Task 1: Control Flow Practice \
+Add status column to Treatment and Placebo data frames using $ operator. Populate status column with strings"high", "optimal" and "borderline" depending on the value of post_bp using for loop. 
+```{r}
+
+bp_list$treatment$status <- character(20)
+bp_list$placebo$status <- character(10)
+
+for(i in 1:nrow(bp_list$treatment)){
+  
+  if((bp_list$treatment$post_bp[i] > 130)){
+    bp_list$treatment$status[i] <- "high"
+  } else if ((bp_list$treatment$post_bp[i] <= 120)){
+    bp_list$treatment$status[i] <- "optimal"
+  } else{
+    bp_list$treatment$status[i] <- "borderline"
+  }
+}
+
+
+for(i in 1:nrow(bp_list$placebo)){
+  
+  if((bp_list$placebo$post_bp[i] > 130)){
+    bp_list$placebo$status[i] <- "high"
+  } else if ((bp_list$placebo$post_bp[i] <= 120)){
+    bp_list$placebo$status[i] <- "optimal"
+  } else{
+    bp_list$placebo$status[i] <- "borderline"
+  }
+}
+
+print(bp_list$treatment)
+print(bp_list$placebo)
+
+```
+
+Task 2: Function Writing \
+Create a function that accepts the blood pressure list and an argument for a function. The function is applied to pre-bp, post_bp and diff_bp columns of both data frames of the blood pressure list. The function returns a list of all six statistics which contains the name of the function, the names of the six variables and the value of the variables.
+```{r}
+
+bp_analyzer <- function(bp_list, func = "mean") {
+  trt <- bp_list$treatment
+  plc <- bp_list$placebo
+  
+  my_fun <- get(func)
+  
+  my_stats <- list(
+    
+    stat_1 = paste0(noquote(func), "(Treatment_Pre_BP) = ", my_fun(trt$pre_bp)), 
+    stat_2 = paste0(noquote(func), "(Treatment_Post_BP) = ", my_fun(trt$post_bp)),     
+    stat_3 = paste0(noquote(func), "(Treatment_Diff_BP) = ", my_fun(trt$diff_bp)), 
+    
+    stat_4 = paste0(noquote(func), "(Placebo_Pre_BP) = ", my_fun(plc$pre_bp)), 
+    stat_5 = paste0(noquote(func), "(Placebo_Post_BP) = ", my_fun(plc$post_bp)),     
+    stat_6 = paste0(noquote(func), "(Placebo_Diff_BP) = ", my_fun(plc$diff_bp)) 
+    
+    )
+  
+  return(my_stats)
+  }
+
+result_1 <- bp_analyzer(bp_list)
+result_1
+
+result_2 <- bp_analyzer(bp_list, "var")
+result_2
+
+result_3 <- bp_analyzer(bp_list, "sd")
+result_3
+
+result_4 <- bp_analyzer(bp_list, "min")
+result_4
+
+result_5 <- bp_analyzer(bp_list, "max")
+result_5
+
+
+```
+
